@@ -2,6 +2,8 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <Scene v-model="myScene">
+      <Camera type="arcRotate" :alpha="20" :beta="-15" :radius="70" :position="[100, 100, 100]"></Camera>
+      <HemisphericLight diffuse="#005"></HemisphericLight>
       <Entity v-model="myEntity">
         <Box v-model="myBox"></Box>
       </Entity>
