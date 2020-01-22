@@ -2,15 +2,14 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <Scene v-model="myScene">
-      <Property name="clearColor" color="#FFF"></Property>
       <Camera type="arcRotate" :alpha="20" :beta="-15" :radius="70" :position="[100, 100, 100]"></Camera>
       <HemisphericLight diffuse="#000"></HemisphericLight>
 
-      <Asset :src="publicPath+'Stadium.obj'"></Asset>
+      <Asset :src="publicPath+'stage.obj'"></Asset>
 
       <Entity v-model="myEntity">
-        <DirectionalLight specular="#0F0" diffuse="F00" :direction="[0,0,1]"></DirectionalLight>
-        <Box v-model="myBox" :position="[0,30,-20]" :scaling="[5,5,5]"></Box>
+        <DirectionalLight specular="#0F0" diffuse="000" :direction="[0,0,-1]"></DirectionalLight>
+        <Asset :src="publicPath+'speaker.obj'" :position="[0,5,0]"></Asset>
       </Entity>
     </Scene>
   </div>
