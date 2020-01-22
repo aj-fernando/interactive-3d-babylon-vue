@@ -1,11 +1,18 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <Scene v-model="myScene">
+      <Entity v-model="myEntity">
+        <Box v-model="myBox"></Box>
+      </Entity>
+    </Scene>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import vb from 'vue-babylonjs';
+Vue.use(vb);
 
 @Component
 export default class HelloWorld extends Vue {
