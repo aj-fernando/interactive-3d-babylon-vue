@@ -1,13 +1,13 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <Scene v-model="myScene">
+    <Scene>
       <Camera type="arcRotate" :alpha="20" :beta="-15" :radius="70" :position="[100, 100, 100]"></Camera>
       <HemisphericLight diffuse="#000"></HemisphericLight>
 
       <Asset :src="publicPath+'stage.obj'"></Asset>
 
-      <Entity v-model="myEntity">
+      <Entity>
         <DirectionalLight specular="#0F0" diffuse="000" :direction="[0,0,-1]"></DirectionalLight>
         <Asset :src="publicPath+'speaker.obj'" :position="[0,5,0]"></Asset>
       </Entity>
