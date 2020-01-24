@@ -59,6 +59,24 @@ export default class Clickables extends Vue {
       console.log("Scene: ", this.scene1);
       console.log("Camera: ", this.camera1);
     }
+
+    // Create a sprite manager to optimize GPU ressources
+    // Parameters : name, imgUrl, capacity, cellSize, scene
+    var spriteManagerTrees = new BABYLON.SpriteManager(
+      "treesManager",
+      "../assets/elephantbaby.png",
+      2000,
+      800,
+      this.scene1
+    );
+
+    //We create 2000 trees at random positions
+    var tree = null;
+    for (var i = 0; i < 2000; i++) {
+      tree = new BABYLON.Sprite("tree", spriteManagerTrees);
+      tree.position.x = Math.random() * 100 - 50;
+      tree.position.z = Math.random() * 100 - 50;
+    }
   }
 
   @Watch("scene1")
@@ -70,7 +88,6 @@ export default class Clickables extends Vue {
   myCamera() {
     // this.camera1.attachControl(this.canvas1, true);
     console.log("CAMERA WATCH: ", this.camera1);
-    this.clickCheckScene();
   }
 
   @Watch("ground1")
@@ -98,7 +115,6 @@ export default class Clickables extends Vue {
           console.log("Got Pick Action");
         }
       )
-    );
     );
   }
 }
