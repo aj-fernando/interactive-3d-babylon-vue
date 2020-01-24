@@ -1,8 +1,14 @@
 <template>
   <div>
-    <button @click="clickTest()">Click Check Console</button>
-    <Scene v-model="scene">
-      <Entity v-model="entity1" :position="[3, -2, -3]">
+    <button @click="clickCheckScene()">Click Check Console</button>
+    <Scene v-model="scene1">
+      <Camera v-model="camera1" type="arcRotate"></Camera>
+
+      <Ground v-model="ground1" :options="{width:10, height:10}">
+        <Material diffuse="#F00"></Material>
+      </Ground>
+
+      <Entity v-model="entity1" :position="[3, 5, -3]">
         <Box v-model="box1"></Box>
       </Entity>
     </Scene>
@@ -18,36 +24,59 @@ Vue.use(vb);
 
 @Component
 export default class Clickables extends Vue {
-  private scene!: BABYLON.Scene;
-  private engine!: BABYLON.Engine;
-  private canvas!: HTMLCanvasElement;
-  private camera!: BABYLON.ArcRotateCamera;
+  private scene1!: BABYLON.Scene;
+  private engine1!: BABYLON.Engine;
+  private ground1!: any;
+  private canvas1!: HTMLCanvasElement;
+  private camera1!: BABYLON.ArcRotateCamera;
 
   private entity1!: any;
   private box1!: any;
 
   constructor() {
     super();
-    this.canvas = document.getElementById("view") as HTMLCanvasElement;
-    this.engine = new BABYLON.Engine(this.canvas, true);
-    this.scene = new BABYLON.Scene(this.engine);
-    // create a Camera, and set its position to (x:0, y:5, z:-10)
-    this.camera = new BABYLON.ArcRotateCamera(
+    this.canvas1 = document.getElementById("view") as HTMLCanvasElement;
+    this.engine1 = new BABYLON.Engine(this.canvas1, true);
+    this.scene1 = new BABYLON.Scene(this.engine1);
+    // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
+    this.camera1 = new BABYLON.ArcRotateCamera(
       "Camera",
-      (3 * Math.PI) / 4,
+      (3 * Math.PI) / 2,
       Math.PI / 4,
-      4,
+      30,
       BABYLON.Vector3.Zero(),
-      this.scene
+      this.scene1
     );
-    // this.camera.attachControl(this.canvas, true);
-
+    // this.camera1.attachControl(this.canvas1, true);
+    this.ground1 = null;
     this.entity1 = null;
     this.box1 = null;
   }
 
-  clickTest() {
-    console.log("You clicked me!");
+  clickCheckScene() {
+    console.log("Check to see if scene is ready!");
+    if (this.ground1 && this.camera1) {
+      console.log("Scene: ", this.scene1);
+      console.log("Camera: ", this.camera1);
+    }
+  }
+
+  @Watch("scene1")
+  myScene() {
+    console.log("SCENE WATCH: ", this.scene1);
+  }
+
+  @Watch("camera1")
+  myCamera() {
+    // this.camera1.attachControl(this.canvas1, true);
+    console.log("CAMERA WATCH: ", this.camera1);
+    this.clickCheckScene();
+  }
+
+  @Watch("ground1")
+  myGround() {
+    console.log("Ground: ", this.ground1);
+    this.clickCheckScene();
   }
 
   @Watch("entity1")
@@ -58,27 +87,15 @@ export default class Clickables extends Vue {
     );
   }
 
-  @Watch("scene")
-  doSomethingToTheScene() {
-    let scene = this;
-    console.log("Scene: ", this.scene);
-  }
-
-  @Watch("camera")
-  myCamera() {
-    this.camera.attachControl(this.canvas, true);
-    console.log("Camera: ", this.camera);
-  }
-
   @Watch("box1")
   myBoxLoaded() {
     console.log(
       "Box1 position | Local space:",
       this.box1.getPositionExpressedInLocalSpace()
-    ); // this.box1 & this.camera is present
+    ); // this.box1 & this.camera1 is present
     console.log(
       "Box1 position | Camera space:",
-      this.box1.getPositionInCameraSpace(this.camera)
+      this.box1.getPositionInCameraSpace(this.camera1)
     );
   }
 }
