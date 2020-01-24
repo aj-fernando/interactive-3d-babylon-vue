@@ -89,13 +89,16 @@ export default class Clickables extends Vue {
 
   @Watch("box1")
   myBoxLoaded() {
-    console.log(
-      "Box1 position | Local space:",
-      this.box1.getPositionExpressedInLocalSpace()
-    ); // this.box1 & this.camera1 is present
-    console.log(
-      "Box1 position | Camera space:",
-      this.box1.getPositionInCameraSpace(this.camera1)
+    var mesh1 = this.box1;
+    mesh1.actionManager = new BABYLON.ActionManager(this.scene1);
+    mesh1.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPickTrigger,
+        function() {
+          console.log("Got Pick Action");
+        }
+      )
+    );
     );
   }
 }
