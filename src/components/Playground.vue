@@ -9,42 +9,41 @@
   </Scene>
 </template>
 
-<script>
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script lang="ts">
+
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import vb from "vue-babylonjs";
 Vue.use(vb);
 
-export default {
-  data() {
-    return {
-      scene: null,
-      ground: null,
-      camera: null
-    };
-  },
+@Component
+export default class Playground extends Vue {
+
+  private scene !: any;
+  private ground !: any;
+  private camera !: any;
     
-  watch: {
-    ground() {
-      this.active();
-    },
+  constructor() {
+    super();
+    this.scene = null;
+    this.ground = null;
+    this.camera = null;
+  }
 
-    camera() {
-      this.active();
-    },
-  },
+  @Watch('scene')
+  myScene() {
+    console.log(this.scene); // this never happens, null is printed
+  }
 
-  methods: {
-    active() {
-      if (this.ground && this.camera) {
-        // this.scene, this.camera, and this.ground are all should be available now
-        console.log(this.scene); // but scene is still null
-        console.log(this.ground.getScene().getEngine().getRenderingCanvas()); // this.ground & this.camera is present
-        console.log(this.camera.getScene().getEngine().getRenderingCanvas()); // result should be the same canvas
-        this.scene = this.camera.getScene();
-        console.log(this.scene);
+  @Watch('ground')
+  myGround() {
+    console.log(this.scene);
+    console.log(this.ground.getScene().getEngine().getRenderingCanvas()); // this.ground & this.camera is present
+  }
 
-      }
-    },
-  },
-};
+  @Watch('camera')
+  myCamera() {
+    console.log(this.scene);
+    console.log(this.camera.getScene().getEngine().getRenderingCanvas()); // result should be the same canvas
+  }
+}
 </script>
