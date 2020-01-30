@@ -1,5 +1,15 @@
 <template>
   <div class="hello">
+    <component
+      :is="field.component"
+      :key="key"
+      :name="field.name"
+      v-for="(field, key) in integration_data"
+      v-model="field.value"
+    >
+      <div>{{field.value}}</div>
+    </component>
+
     <h1>{{ msg }}</h1>
     <ul v-for="array in arrayList" :key="array.id">
       <li v-for="speaker in array.speakerList" :key="speaker.id">{{ speaker.id }}</li>
@@ -46,6 +56,12 @@ interface ISpeakerModel {
   position: Vector3;
 }
 
+interface IIntegrationData {
+  name: string;
+  component: string;
+  value: string;
+}
+
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
@@ -64,6 +80,8 @@ export default class HelloWorld extends Vue {
   private watchSpeaker: any;
 
   private publicPath: string;
+
+  private integration_data: IIntegrationData;
 
   constructor() {
     super();
@@ -104,6 +122,8 @@ export default class HelloWorld extends Vue {
     ];
     this.watchSpeaker = null;
     this.watchArray = null;
+
+    this.integration_data = { name: "one", component: "one", value: "ok" };
   }
 
   onSpeaker(event: any) {
