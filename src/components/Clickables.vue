@@ -96,9 +96,9 @@ export default class Clickables extends Vue {
         BABYLON.ActionManager.OnPickTrigger,
         function() {
           console.log("Got Pick Action");
+          alert("you clicked me!");
         }
       )
-    );
     );
   }
 }
