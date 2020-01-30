@@ -1,6 +1,10 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <ul v-for="array in arrayList" :key="array.id">
+      <li v-for="speaker in array.speakerList" :key="speaker.id">{{ speaker.id }}</li>
+    </ul>
+
     <Scene>
       <Camera type="arcRotate" :alpha="20" :beta="-15" :radius="70" :position="[100, 100, 100]"></Camera>
       <HemisphericLight diffuse="#000"></HemisphericLight>
@@ -9,33 +13,15 @@
 
       <DirectionalLight specular="#0F0" diffuse="000" :direction="[0,0,-1]"></DirectionalLight>
 
-      <Entity v-model="array1">
+      <Entity v-model="watchArray" v-for="array in arrayList" :key="array.id" @entity="onArray">
         <Asset
-          v-model="array1_speaker1"
-          :src="publicPath+'speakermodule.obj'"
-          :scaling="this.speakerScaling"
-          :position="[3,6.1,0]"
-        ></Asset>
-        <Asset
-          v-model="array1_speaker2"
-          :src="publicPath+'speakermodule.obj'"
-          :scaling="this.speakerScaling"
-          :position="[3,3,0]"
-        ></Asset>
-      </Entity>
-
-      <Entity v-model="array2">
-        <Asset
-          v-model="array2_speaker1"
-          :src="publicPath+'speakermodule.obj'"
-          :scaling="this.speakerScaling"
-          :position="[-5,6.1,0]"
-        ></Asset>
-        <Asset
-          v-model="array2_speaker2"
-          :src="publicPath+'speakermodule.obj'"
-          :scaling="this.speakerScaling"
-          :position="[-5,3,0]"
+          v-model="watchSpeaker"
+          @entity="onSpeaker"
+          v-for="speaker in array.speakerList"
+          :key="speaker.id"
+          :src="speakerPath"
+          :scaling="speakerScaling"
+          :position="speaker.position"
         ></Asset>
       </Entity>
     </Scene>
@@ -50,6 +36,16 @@ import vb from "vue-babylonjs";
 import { Vector3 } from "babylonjs";
 Vue.use(vb);
 
+interface IArrayModel {
+  id: string;
+  speakerList: ISpeakerModel[];
+}
+
+interface ISpeakerModel {
+  id: string;
+  position: Vector3;
+}
+
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
@@ -60,13 +56,12 @@ export default class HelloWorld extends Vue {
   private canvas1!: HTMLCanvasElement;
   private camera1!: BABYLON.ArcRotateCamera;
 
-  private array1!: any;
-  private array2!: any;
-  private array1_speaker1!: any;
-  private array1_speaker2!: any;
-  private array2_speaker1!: any;
-  private array2_speaker2!: any;
   private speakerScaling: Vector3;
+  private speakerPath: string;
+
+  private arrayList: IArrayModel[];
+  private watchArray: any;
+  private watchSpeaker: any;
 
   private publicPath: string;
 
@@ -88,41 +83,54 @@ export default class HelloWorld extends Vue {
     );
     // this.camera1.attachControl(this.canvas1, true);
 
-    this.array1 = null;
-    this.array2 = null;
-    this.array1_speaker1 = null;
-    this.array1_speaker2 = null;
-    this.array2_speaker1 = null;
-    this.array2_speaker2 = null;
     this.speakerScaling = new Vector3(0.005, 0.005, 0.005);
+    this.speakerPath = this.publicPath + "speakermodule.obj";
+
+    this.arrayList = [
+      {
+        id: "array1",
+        speakerList: [
+          { id: "array1-speaker1", position: new Vector3(3, 6.1, 0) },
+          { id: "array1-speaker2", position: new Vector3(3, 3, 0) }
+        ]
+      },
+      {
+        id: "array2",
+        speakerList: [
+          { id: "array2-speaker1", position: new Vector3(-5, 6.1, 0) },
+          { id: "array2-speaker2", position: new Vector3(-5, 3, 0) }
+        ]
+      }
+    ];
+    this.watchSpeaker = null;
+    this.watchArray = null;
   }
 
-  @Watch("array1_speaker1")
-  array1Speaker1Loaded() {
-    var mesh = this.array1_speaker1;
-    mesh.actionManager = new BABYLON.ActionManager(this.scene1);
-    mesh.actionManager.registerAction(
-      new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPickTrigger,
-        function() {
-          alert("Array1 Speaker1 clicked!");
-        }
-      )
-    );
+  onSpeaker(event: any) {
+    this.watchSpeaker = event.entity;
+    console.log("onSpeaker: ", event);
+    // console.log("speaker: ", this.watchSpeaker);
   }
-  @Watch("array2_speaker2")
-  array2Speaker2Loaded() {
-    var mesh = this.array2_speaker2;
-    mesh.actionManager = new BABYLON.ActionManager(this.scene1);
-    mesh.actionManager.registerAction(
-      new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPickTrigger,
-        function() {
-          alert("Array2 Speaker2 clicked!");
-        }
-      )
-    );
+
+  onArray(event: any) {
+    console.log("onArray: ", event);
+    // console.log("speaker: ", this.watchSpeaker);
   }
+
+  // @Watch("watchSpeaker")
+  // speakerLoaded() {
+  //   console.log("watchspeaker: ", this.watchSpeaker);
+  //   var mesh = this.watchSpeaker;
+  //   mesh.actionManager = new BABYLON.ActionManager(this.scene1);
+  //   mesh.actionManager.registerAction(
+  //     new BABYLON.ExecuteCodeAction(
+  //       BABYLON.ActionManager.OnPickTrigger,
+  //       function() {
+  //         alert("Speaker clicked!");
+  //       }
+  //     )
+  //   );
+  // }
 }
 </script>
 
