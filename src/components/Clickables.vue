@@ -10,6 +10,7 @@
 
       <Entity v-model="entity1" :position="[3, 5, -3]">
         <Box v-model="box1"></Box>
+        <Sphere v-model="sphere1" :position="[0, 3, 4]"></Sphere>
       </Entity>
     </Scene>
   </div>
@@ -32,6 +33,7 @@ export default class Clickables extends Vue {
 
   private entity1!: any;
   private box1!: any;
+  private sphere1!: any;
 
   constructor() {
     super();
@@ -51,6 +53,7 @@ export default class Clickables extends Vue {
     this.ground1 = null;
     this.entity1 = null;
     this.box1 = null;
+    this.sphere1 = null;
   }
 
   clickCheckScene() {
@@ -95,8 +98,21 @@ export default class Clickables extends Vue {
       new BABYLON.ExecuteCodeAction(
         BABYLON.ActionManager.OnPickTrigger,
         function() {
-          console.log("Got Pick Action");
-          alert("you clicked me!");
+          alert("Box clicked!");
+        }
+      )
+    );
+  }
+
+  @Watch("sphere1")
+  mySphereLoaded() {
+    var mesh1 = this.sphere1;
+    mesh1.actionManager = new BABYLON.ActionManager(this.scene1);
+    mesh1.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPickTrigger,
+        function() {
+          alert("Sphere clicked!");
         }
       )
     );
