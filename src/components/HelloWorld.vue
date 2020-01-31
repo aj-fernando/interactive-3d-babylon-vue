@@ -1,9 +1,17 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <ul v-for="array in arrayList" :key="array.id">
+
+    <div v-for="array in arrayList" :key="'SW'+array.id">
+      <div v-for="speaker in array.speakerList" :key="speaker.id">
+        {{speaker.id}}
+        <input type="text" v-model="speaker.position" />
+      </div>
+    </div>
+
+    <!-- <ul v-for="array in arrayList" :key="array.id">
       <li v-for="speaker in array.speakerList" :key="speaker.id">{{ speaker.id }}</li>
-    </ul>
+    </ul>-->
 
     <Scene>
       <Camera type="arcRotate" :alpha="20" :beta="-15" :radius="70" :position="[100, 100, 100]"></Camera>
@@ -13,16 +21,13 @@
 
       <DirectionalLight specular="#0F0" diffuse="000" :direction="[0,0,-1]"></DirectionalLight>
 
-      <Entity v-model="watchArray" v-for="array in arrayList" :key="array.id" @entity="onArray">
-        <Asset
-          v-model="watchSpeaker"
-          @entity="onSpeaker"
+      <Entity v-for="array in arrayList" :key="'SW'+array.id">
+        <SpeakerWatch
+          :speaker="speaker"
+          :scene="scene1"
           v-for="speaker in array.speakerList"
           :key="speaker.id"
-          :src="speakerPath"
-          :scaling="speakerScaling"
-          :position="speaker.position"
-        ></Asset>
+        ></SpeakerWatch>
       </Entity>
     </Scene>
   </div>
@@ -35,6 +40,7 @@ import * as GUI from "babylonjs-gui";
 import vb from "vue-babylonjs";
 import { Vector3 } from "babylonjs";
 Vue.use(vb);
+import SpeakerWatch from "@/components/SpeakerWatch.vue";
 
 interface IArrayModel {
   id: string;
@@ -44,9 +50,15 @@ interface IArrayModel {
 interface ISpeakerModel {
   id: string;
   position: Vector3;
+  scale?: Vector3;
+  path?: string;
 }
 
-@Component
+@Component({
+  components: {
+    SpeakerWatch
+  }
+})
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
@@ -56,12 +68,7 @@ export default class HelloWorld extends Vue {
   private canvas1!: HTMLCanvasElement;
   private camera1!: BABYLON.ArcRotateCamera;
 
-  private speakerScaling: Vector3;
-  private speakerPath: string;
-
   private arrayList: IArrayModel[];
-  private watchArray: any;
-  private watchSpeaker: any;
 
   private publicPath: string;
 
@@ -83,9 +90,6 @@ export default class HelloWorld extends Vue {
     );
     // this.camera1.attachControl(this.canvas1, true);
 
-    this.speakerScaling = new Vector3(0.005, 0.005, 0.005);
-    this.speakerPath = this.publicPath + "speakermodule.obj";
-
     this.arrayList = [
       {
         id: "array1",
@@ -102,25 +106,29 @@ export default class HelloWorld extends Vue {
         ]
       }
     ];
-    this.watchSpeaker = null;
-    this.watchArray = null;
+    for (let arr of this.arrayList) {
+      for (let spk of arr.speakerList) {
+        spk.path = this.publicPath + "speakermodule.obj";
+        spk.scale = new Vector3(0.005, 0.005, 0.005);
+      }
+    }
   }
 
-  onSpeaker(event: any) {
-    this.watchSpeaker = event.entity;
-    console.log("onSpeaker: ", event);
-    // console.log("speaker: ", this.watchSpeaker);
-  }
+  // onSpeaker(event: any) {
+  //   this.watchSpeaker = event.entity;
+  //   console.log("onSpeaker: ", event);
+  //   // console.log("speaker: ", this.watchSpeaker);
+  // }
 
-  onArray(event: any) {
-    console.log("onArray: ", event);
-    // console.log("speaker: ", this.watchSpeaker);
-  }
+  // onArray(event: any) {
+  //   console.log("onArray: ", event);
+  //   // console.log("speaker: ", this.watchSpeaker);
+  // }
 
-  // @Watch("watchSpeaker")
-  // speakerLoaded() {
-  //   console.log("watchspeaker: ", this.watchSpeaker);
-  //   var mesh = this.watchSpeaker;
+  // @Watch("watchSpeaker", { deep: true })
+  // speakerLoaded(loadedSpeaker: any) {
+  //   console.log("@Watch speakerLoaded: ", loadedSpeaker);
+  //   var mesh = loadedSpeaker;
   //   mesh.actionManager = new BABYLON.ActionManager(this.scene1);
   //   mesh.actionManager.registerAction(
   //     new BABYLON.ExecuteCodeAction(
