@@ -1,6 +1,6 @@
 <template>
   <Asset
-    v-model="selectedSpeaker"
+    v-model="speakerAsset"
     :src="speaker.path"
     :scaling="speaker.scale"
     :position="speaker.position"
@@ -20,11 +20,11 @@ interface ISpeakerModel {
 export default class SpeakerWatch extends Vue {
   @Prop() private speaker!: any;
   @Prop() private scene!: any;
-  private selectedSpeaker!: any;
+  private speakerAsset!: any;
 
   constructor() {
     super();
-    this.selectedSpeaker = null;
+    this.speakerAsset = null;
   }
 
   @Watch("speaker", { immediate: true, deep: true })
@@ -36,9 +36,15 @@ export default class SpeakerWatch extends Vue {
     this.speakerClicked(loadedSpeaker);
   }
 
+  @Watch("speakerAsset")
+  speakerAssetHandler(loadedSpeaker: ISpeakerModel) {
+    console.log("speakerAssetHandler");
+    this.speakerClicked(loadedSpeaker);
+  }
+
   speakerClicked(speakerInfo: ISpeakerModel) {
     console.log("Parent scene: ", this.scene);
-    var mesh1 = this.selectedSpeaker;
+    var mesh1 = this.speakerAsset;
     mesh1.actionManager = new BABYLON.ActionManager(this.scene);
     mesh1.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(
