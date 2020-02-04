@@ -13,7 +13,9 @@ import { Vector3 } from "babylonjs";
 
 interface ISpeakerModel {
   id: string;
-  position: Vector3;
+  position: BABYLON.Vector3;
+  scale?: BABYLON.Vector3;
+  path?: string;
 }
 
 @Component

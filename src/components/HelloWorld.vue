@@ -38,7 +38,6 @@ import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import * as BABYLON from "babylonjs";
 import * as GUI from "babylonjs-gui";
 import vb from "vue-babylonjs";
-import { Vector3 } from "babylonjs";
 Vue.use(vb);
 import SpeakerWatch from "@/components/SpeakerWatch.vue";
 
@@ -49,8 +48,8 @@ interface IArrayModel {
 
 interface ISpeakerModel {
   id: string;
-  position: Vector3;
-  scale?: Vector3;
+  position: BABYLON.Vector3;
+  scale?: BABYLON.Vector3;
   path?: string;
 }
 
@@ -94,22 +93,22 @@ export default class HelloWorld extends Vue {
       {
         id: "array1",
         speakerList: [
-          { id: "array1-speaker1", position: new Vector3(3, 6.1, 0) },
-          { id: "array1-speaker2", position: new Vector3(3, 3, 0) }
+          { id: "array1-speaker1", position: new BABYLON.Vector3(3, 6.1, 0) },
+          { id: "array1-speaker2", position: new BABYLON.Vector3(3, 3, 0) }
         ]
       },
       {
         id: "array2",
         speakerList: [
-          { id: "array2-speaker1", position: new Vector3(-5, 6.1, 0) },
-          { id: "array2-speaker2", position: new Vector3(-5, 3, 0) }
+          { id: "array2-speaker1", position: new BABYLON.Vector3(-5, 6.1, 0) },
+          { id: "array2-speaker2", position: new BABYLON.Vector3(-5, 3, 0) }
         ]
       }
     ];
     for (let arr of this.arrayList) {
       for (let spk of arr.speakerList) {
         spk.path = this.publicPath + "speakermodule.obj";
-        spk.scale = new Vector3(0.005, 0.005, 0.005);
+        spk.scale = new BABYLON.Vector3(0.005, 0.005, 0.005);
       }
     }
   }
