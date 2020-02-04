@@ -73,21 +73,8 @@ export default class HelloWorld extends Vue {
 
   constructor() {
     super();
-
     this.publicPath = `${process.env.BASE_URL}`;
-    this.canvas1 = document.getElementById("view") as HTMLCanvasElement;
-    this.engine1 = new BABYLON.Engine(this.canvas1, true);
-    this.scene1 = new BABYLON.Scene(this.engine1);
-    // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
-    this.camera1 = new BABYLON.ArcRotateCamera(
-      "Camera",
-      (3 * Math.PI) / 2,
-      Math.PI / 4,
-      30,
-      BABYLON.Vector3.Zero(),
-      this.scene1
-    );
-    // this.camera1.attachControl(this.canvas1, true);
+    this.createScene();
 
     this.arrayList = [
       {
@@ -113,16 +100,27 @@ export default class HelloWorld extends Vue {
     }
   }
 
-  // onSpeaker(event: any) {
-  //   this.watchSpeaker = event.entity;
-  //   console.log("onSpeaker: ", event);
-  //   // console.log("speaker: ", this.watchSpeaker);
-  // }
+  createScene() {
+    this.canvas1 = document.getElementById("view") as HTMLCanvasElement;
+    this.engine1 = new BABYLON.Engine(this.canvas1, true);
+    this.scene1 = new BABYLON.Scene(this.engine1);
+    // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
+    this.camera1 = new BABYLON.ArcRotateCamera(
+      "Camera",
+      (3 * Math.PI) / 2,
+      Math.PI / 4,
+      30,
+      BABYLON.Vector3.Zero(),
+      this.scene1
+    );
+    // this.camera1.attachControl(this.canvas1, true);
 
-  // onArray(event: any) {
-  //   console.log("onArray: ", event);
-  //   // console.log("speaker: ", this.watchSpeaker);
-  // }
+    this.scene1.onNewMeshAddedObservable.add(function(mesh: any) {
+      if (mesh instanceof BABYLON.Mesh) {
+        console.log("New mesh added: ", mesh.position);
+      }
+    });
+  }
 
   // @Watch("watchSpeaker", { deep: true })
   // speakerLoaded(loadedSpeaker: any) {
@@ -135,7 +133,7 @@ export default class HelloWorld extends Vue {
   //       function() {
   //         alert("Speaker clicked!");
   //       }
-  //     )
+  //     }
   //   );
   // }
 }
