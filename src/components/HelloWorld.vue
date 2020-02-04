@@ -13,7 +13,7 @@
       <li v-for="speaker in array.speakerList" :key="speaker.id">{{ speaker.id }}</li>
     </ul>-->
 
-    <Scene>
+    <Scene @scene="onScene">
       <Camera type="arcRotate" :alpha="20" :beta="-15" :radius="70" :position="[100, 100, 100]"></Camera>
       <HemisphericLight diffuse="#000"></HemisphericLight>
 
@@ -122,16 +122,18 @@ export default class HelloWorld extends Vue {
     });
   }
 
-  // @Watch("watchSpeaker", { deep: true })
-  // speakerLoaded(loadedSpeaker: any) {
-  //   console.log("@Watch speakerLoaded: ", loadedSpeaker);
-  //   var mesh = loadedSpeaker;
-  //   mesh.actionManager = new BABYLON.ActionManager(this.scene1);
-  //   mesh.actionManager.registerAction(
-  //     new BABYLON.ExecuteCodeAction(
-  //       BABYLON.ActionManager.OnPickTrigger,
-  //       function() {
-  //         alert("Speaker clicked!");
+  onScene(scene: any) {
+    console.log("Scene: ", scene);
+  }
+  //   BABYLON.SceneLoader.ImportMesh(
+  //     "",
+  //     this.publicPath + "speakermodule.obj",
+  //     "",
+  //     scene,
+  //     function(newMeshes) {
+  //       for (let mesh in newMeshes) {
+  //         newMeshes[mesh].scaling = new BABYLON.Vector3(0.005, 0.005, 0.005);
+  //         newMeshes[mesh].position = new BABYLON.Vector3(4, 4, 4);
   //       }
   //     }
   //   );
